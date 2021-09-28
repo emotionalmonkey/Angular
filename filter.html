@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Filter</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+            table tr th {
+                border-bottom: 1px solid;
+                cursor: pointer;
+            }
+
+            table tr:nth-child(even) {
+                background-color: #ddd;
+            }
+
+            table td, table th {
+                border-left: 1px solid;
+                padding: 5px 10px;
+            }
+
+                table td:first-child, table th:first-child {
+                    border-left: none;
+                }
+
+        .sortorder {
+            color: #808080;
+        }
+
+            .sortorder:after {
+                content: '\25b2';
+                /* content: '\1F589';*/
+            }
+
+            .sortorder.reverse:after {
+                content: '\25bc';
+            }
+    </style>
+</head>
+<body>
+    <div ng-app="myApp" ng-controller="personCtrl">
+        <h4>List Filter</h4>
+        <pre>Sort By: age, name</pre>
+        <p><input type="text" ng-model="search" placeholder="Search..." /></p>
+        <ol>
+            <li ng-repeat="x in people| filter: search | orderBy :'age': 'name'">{{x.name+", "+x.age+", "+x.country}}</li>
+        </ol>
+
+        <div ng-controller="tblCtrl">
+            <h4>Table Filter</h4>
+            <pre>Sort By: {{propertyName}}; reverse={{reverse}}</pre>
+            <p><input type="text" ng-model="test" placeholder="Search..." /></p>
+            <table border="1" width="100%">
+                <tr>
+                    <th>No.</th>
+                    <th ng-click="myOrderBy('name')">
+                        Name
+                        <span class="sortorder" ng-show="propertyName=='name'" ng-class="{reverse: reverse}"></span>
+                    </th>
+                    <th ng-click="myOrderBy('age')">
+                        Age
+                        <span class="sortorder" ng-show="propertyName=='age'" ng-class="{reverse: reverse}"></span>
+                    </th>
+                    <th ng-click="myOrderBy('country')">
+                        Country
+                        <span class="sortorder" ng-show="propertyName=='country'" ng-class="{reverse: reverse}"></span>
+                    </th>
+                </tr>
+                <tr ng-repeat="x in peopleData|filter:test">
+                    <td>{{$index+1}}</td>
+                    <td>{{x.name}}</td>
+                    <td>{{x.age}}</td>
+                    <td>{{x.country}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <script>
+        var friends = [{ name: "May", country: "Myanmar", age: 25 },
+        { name: "Irene", country: "Sweden", age: 21 },
+        { name: "Mike", country: "US", age: 24 },
+        { name: "Tim", country: "Poland", age: 26 },
+        { name: "Hikaru", country: "Japan", age: 17 },
+        { name: "Bruce", country: "UK", age: 23 },
+        { name: "Kathern", country: "Netherland", age: 24 }];
+
+        var app = angular.module("myApp", []);
+        app.controller("personCtrl", function ($scope) {
+            $scope.people = friends;
+        });
+        app.controller('tblCtrl', ['$scope', 'orderByFilter', function ($scope, orderBy) {
+            $scope.propertyName = 'name';
+            $scope.reverse = false;
+            $scope.peopleData = orderBy(friends, $scope.propertyName, $scope.reverse);
+
+            $scope.myOrderBy = function (propertyName) {
+                $scope.reverse = (propertyName !== null && $scope.propertyName === propertyName)
+                    ? !$scope.reverse : false;
+                $scope.propertyName = propertyName;
+                $scope.peopleData = orderBy(friends, $scope.propertyName, $scope.reverse);
+            };
+        }]);
+    </script>
+</body>
+</html>

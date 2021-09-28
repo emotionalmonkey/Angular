@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <style>
+        input.ng-invalid {
+            background-color: lightblue;
+        }
+
+        input.dirty {
+            background-color: pink;
+        }
+
+        input.ng-empty {
+            background-color: lightsteelblue;
+        }
+    </style>
+    <script>
+        var app = angular.module("myApp", []);
+    </script>
+</head>
+<body>
+    <div ng-app="myApp">
+        <p>Change name and email.</p>
+        <p>The name is {{firstName +" "+ lastName}}<br />
+        The email is {{myEmail}}
+        </p>
+        <form name="myForm" ng-init="firstName='Hikaru';lastName='Kurosawa';myEmail='myemail@web.com'">            
+            First Name: <input type="text" name="firstName" ng-model="firstName" required />
+            <span ng-show="myForm.firstName.$error.required">
+                This field is required!
+            </span><br />
+            Last Name: <input type="text" name="lastName" ng-model="lastName" />
+            <br />
+            Email:
+            <input type="email" name="myEmail" ng-model="myEmail" required />
+            <span ng-show="myForm.myEmail.$error.required">
+                This field is required!
+            </span>
+            <span ng-show="myForm.myEmail.$error.email" style="background-color:lightpink; color: red;">
+                Not a valid e-mail address
+            </span>
+        </form>
+    </div>
+</body>
+</html>

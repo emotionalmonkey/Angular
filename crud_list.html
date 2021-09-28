@@ -1,0 +1,124 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>My Shopping List</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <style>
+        .main {
+            box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
+            background-color: #f1f1f1;
+            text-align: center;
+            margin: auto;
+            width: 500px;
+            padding: 20px 25px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 27px;
+        }
+
+        li {
+            padding: 7px;
+            background-color: #fff;
+            border-bottom: solid 0.7px #ccc;
+        }
+
+        span {
+            float: right;
+            cursor: pointer;
+            padding-right: 10px;
+            font-family: cursive;
+        }
+
+        input {
+            height: 25px;
+            border: 1px solid #ccc;
+            padding: 2px;
+        }
+
+        button {
+            color: white;
+            border: none;
+            height: 27px;
+        }
+
+        .add {
+            background-color: #46a049;
+        }
+
+        .cancel {
+            background-color: #e43a33;
+        }
+
+        p {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div ng-app="myApp" ng-controller="appCtrl" class="main">
+        <h3>My Shopping List</h3>
+        <ul>
+            <li ng-repeat="x in products">
+                {{x}}
+                <span ng-click="removeItem($index)" title="Delete" ng-hide="x == editingItem">x</span>
+                <span ng-click="editItem(x)" title="Edit" ng-hide="x == editingItem">&#x1F589;</span>
+            </li>
+        </ul>
+        <input type="text" ng-model="item" placeholder="Add shopping items here" />
+        <button class="add" ng-click="addItem()">{{btnAdd}}</button>
+        <button class="cancel" ng-click="cancel()" ng-show="editingItem!=''">Cancel</button>
+        <p>{{errormsg}}</p>
+    </div>
+    <script>
+        var app = angular.module("myApp", []);
+        app.controller("appCtrl", function ($scope) {
+            $scope.products = ["Coffee", "Cake", "Bread", "Peanut Butter", "Milk"];
+            $scope.editingItem = "";
+            $scope.btnAdd = "Add";
+            $scope.addItem = function () {
+                var item = $scope.item;
+                if (item == "") {
+                    if ($scope.editingItem != "")
+                        $scope.errormsg = "Please enter an item to update."
+                    return;
+                }
+                if ($scope.editingItem != "") {
+                    var index = $scope.products.indexOf($scope.editingItem);
+                    $scope.products[index] = item;
+                    // Or
+                    // $scope.products.splice(index, 1, item);
+                    $scope.item = "";
+                    $scope.editingItem = "";
+                    $scope.btnAdd = "Add";
+                    return;
+                }
+                if ($scope.products.indexOf(item) == -1) {
+                    $scope.products.push(item);
+                    $scope.item = "";
+                }
+                else {
+                    $scope.errormsg = "The item is already in your shopping list."
+                }
+
+            };
+            $scope.removeItem = function (x) {
+                $scope.products.splice(x, 1);
+            }
+            $scope.editItem = function (x) {
+                $scope.editingItem = x;
+                $scope.item = x;
+                $scope.btnAdd = "Update";
+            }
+            $scope.cancel = function () {
+                $scope.item = "";
+                $scope.editingItem = "";
+                $scope.btnAdd = "Add";
+            }
+        });
+    </script>
+</body>
+</html>
